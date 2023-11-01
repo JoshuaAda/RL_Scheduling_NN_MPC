@@ -4,9 +4,8 @@ import numpy as np
 import do_mpc
 import os
 import importlib
-import tikzplotlib
 from model_class import NeuralNetwork
-import copy
+##### Simulation class for one embedded system
 class embedded:
     """
     Class of the system on the premised with an explicit embedded controller approximation

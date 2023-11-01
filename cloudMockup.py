@@ -8,7 +8,7 @@ import do_mpc
 from model_class import NeuralNetwork
 import sys
 import numpy as np
-
+#### Cloud simulation class with scheduling of mockup processes
 class cloudMockup(cloud):
     def __init__(self, parameters=None,scenario=None):  #
         if parameters is not None:

@@ -1,9 +1,9 @@
-import numpy as np
+
 import torch
 from torch.utils.data import Dataset
-import os
 
 
+##### Dataset class for the MPC training
 class CustomMPCDataset(Dataset):
     def __init__(self, states, inputs,bounds=None, transform=None):
         self.states= torch.from_numpy(states).type(torch.float)

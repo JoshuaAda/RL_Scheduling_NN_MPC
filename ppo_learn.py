@@ -2,7 +2,6 @@ import sys
 import os
 from callback import SaveOnBestTrainingRewardCallback
 import gym
-import torch
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3.common import results_plotter
@@ -12,11 +11,13 @@ from stable_baselines3.common.monitor import Monitor
 import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
-from typing import Callable, List, Optional, Tuple
+from typing import List, Optional, Tuple
 EPISODES_WINDOW = 1000
 sys.path.append('./gym-examples')
 import gym_examples
+import argparse
 
+##### This is a modified version of the plot_results function from stable_baselines3.common.results_plotter
 def plot_curves(
     xy_list: List[Tuple[np.ndarray, np.ndarray]], x_axis: str, title: str, figsize: Tuple[int, int] = (8, 2)
 ) -> None:
@@ -34,7 +35,6 @@ def plot_curves(
     max_x = max(xy[0][-1] for xy in xy_list)
     min_x = 0
     for _, (x, y) in enumerate(xy_list):
-        #plt.scatter(x, y, s=2)
         # Do not plot the smoothed curve at all if the timeseries is shorter than window size.
         if x.shape[0] >= EPISODES_WINDOW:
             # Compute and plot rolling mean with window of size EPISODE_WINDOW
@@ -45,6 +45,8 @@ def plot_curves(
     plt.xlabel(x_axis)
     plt.ylabel("Episode Rewards")
     plt.tight_layout()
+
+##### This is a modified version of the plot_results function from stable_baselines3.common.results_plotter
 def plot_own_results(dirs: List[str], num_timesteps: Optional[int], x_axis: str, task_name: str, figsize: Tuple[int, int] = (8, 2)):
     data_frames = []
     for folder in dirs:
@@ -54,56 +56,67 @@ def plot_own_results(dirs: List[str], num_timesteps: Optional[int], x_axis: str,
         data_frames.append(data_frame)
     xy_list = [ts2xy(data_frame, x_axis) for data_frame in data_frames]
     plot_curves(xy_list, x_axis, task_name, figsize)
-def train(maxi=16,p=5,system_size=4,num_workers=8,use_true=False):
-    log_dir = "results/model_"+str(maxi)+"_"+str(p)+"_"+str(system_size)+"_"+str(num_workers)+"_results/"
+
+
+##### This is the main training function for the PPO algorithm as well as the Safe RL
+def train(args):
+    ###### The following parameters can be set by the user:
+    maxi=args.t_s_length
+    p=args.failure_prob
+    system_size=args.system_size
+    num_workers=args.num_workers
+    use_true=args.use_true
+    max_load=args.max_load
+    run_name=args.run_name
+    image_dir=args.image_dir
+    log_dir = "results/model_"+str(maxi)+"_"+str(p)+"_"+str(system_size)+"_"+str(num_workers)+"_results"+run_name+"/"
+    num_iter=args.num_iter
+    use_priority=args.use_priority
+    use_both=args.use_both
+    verbose=args.verbose
+    n_steps=args.n_steps
+    batch_size=args.batch_size
+    check_freq=args.check_freq
+
     os.makedirs(log_dir, exist_ok=True)
-    if use_true:
+    ###### Experimental: If you set use_true to True, the model will be trained with real simulated systems.
+    ######  You will have to define your parameters for the scenario though, see evaluation.py for an example.
+    #if use_true:
+    #    parameters = dict() ...
 
-            x0_list = [np.array([[20], [20], [10], [np.pi * 2 / 3]]) * np.random.random((4, 1)) - np.array(
-                [[10], [10], [5], [np.pi * 1 / 3]]), np.array([[4], [-4]]),
-                       np.array([[4], [-4], [4], [-4]])]  # np.array([[0], [-1], [2.5], [0]])
-            parameters = dict()
-            parameters['num_train_trajectories'] = 10
-            parameters['num_train_samples_per_trajectories'] = 125
-            parameters['number_of_constraint_points'] = 21
-            parameters['num_approx_feasible_set'] = 1000
-            parameters['early_stopping'] = 2
-            parameters['learning_rate'] = 1e-2
-            parameters['max_epoch'] = 1000
-            parameters['train_split'] = 0.84
-            parameters['batch_size'] = 40
-            parameters['x0_list'] = x0_list
-            parameters['N_embedded'] = 4
-            parameters['max_process'] = 8
-            parameters['system_list'] = ['systems.system_' + str(k) for k in range(parameters['N_embedded'])]
-            initial_states = x0_list
-            M_list = []
+    ##### Generating an environment and train the model. The callback is used to save the best model.
     ENV_NAME = 'gym_examples/Schedule-v0'
-    env = gym.make(ENV_NAME,use_priority=False,use_both=True,use_true=use_true,max_sample=maxi,max_load=6,max_training=maxi,size_p=num_workers,sample_par=num_workers,training_par=num_workers,p=p,system_size=system_size)
-
+    env = gym.make(ENV_NAME,use_priority=use_priority,use_both=use_both,use_true=use_true,max_sample=maxi,max_load=max_load,max_training=maxi,size_p=num_workers,sample_par=num_workers,training_par=num_workers,p=p,system_size=system_size)
     env = Monitor(env, log_dir)
-    callback = SaveOnBestTrainingRewardCallback(check_freq=1_000, log_dir=log_dir)
-    model = PPO("MlpPolicy", env,verbose=1,n_steps=10_000,batch_size=100)#,device=torch.device("cpu"))
-    timesteps=10_000_000
+    callback = SaveOnBestTrainingRewardCallback(check_freq=check_freq, log_dir=log_dir)
+    model = PPO("MlpPolicy", env,verbose=verbose,n_steps=n_steps,batch_size=batch_size)#,device=torch.device("cpu"))
+    timesteps=num_iter
     model.learn(total_timesteps=timesteps,callback=callback)
-    #model.save("results/model/best_model.zip")
     plot_own_results([log_dir], timesteps, results_plotter.X_TIMESTEPS, "Scheduling for "+str(system_size)+" systems and "+str(maxi)+" sampling values")
-    #plt.figure()
     plt.show(block=False)
-    plt.savefig(fname="results/images/reward_"+str(maxi)+"_"+str(p)+"_"+str(system_size)+"_"+str(num_workers)+"_results.svg")
-    tikzplotlib.save("results/images/reward_"+str(maxi)+"_"+str(p)+"_"+str(system_size)+"_"+str(num_workers)+"_results.tikz")
+    plt.savefig(fname=image_dir+"/reward_"+str(maxi)+"_"+str(p)+"_"+str(system_size)+"_"+str(num_workers)+"_results"+run_name+".svg")
+    tikzplotlib.save(image_dir+"/reward_"+str(maxi)+"_"+str(p)+"_"+str(system_size)+"_"+str(num_workers)+"_results"+run_name+".tikz")
     plt.close()
     env.close()
-def main():
-    maximal=[1250]
-    p_list=[0.1]#range(1,10)
-    system_size=[16]
-    num_workers=[25]
-    for m in range(len(num_workers)):
-        #for k in range(len(p_list)):
-            #for i in range(len(maximal)):
-            #    for j in range(len(system_size)):
-                    train(maximal[m],p_list[m],system_size[m],num_workers[m])
+
+
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--use_both', type=bool, default=True)
+    parser.add_argument('--use_priority', type=bool, default=False)
+    parser.add_argument('--use_true', type=bool, default=False)
+    parser.add_argument('--t_s_length', type=int, default=1250)
+    parser.add_argument('--max_load', type=int, default=6)
+    parser.add_argument('--failure_prob', type=float, default=0.1)
+    parser.add_argument('--system_size', type=int, default=16)
+    parser.add_argument('--num_workers', type=int, default=256)
+    parser.add_argument('--num_iter', type=int, default=10000000)
+    parser.add_argument('--verbose', type=int, default=1)
+    parser.add_argument('--n_steps', type=int, default=10000)
+    parser.add_argument('--batch_size', type=int, default=100)
+    parser.add_argument('--check_freq', type=int, default=1000)
+    parser.add_argument('--run_name', type=str, default="SafeRL")
+    parser.add_argument('--image_dir', type=str, default="results/images")
+    args = parser.parse_args()
+    train(args)

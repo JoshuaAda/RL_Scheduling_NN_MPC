@@ -18,7 +18,7 @@ from multiprocessing import Process,Queue
 from matplotlib.patches import Rectangle
 from matplotlib.patches import Patch
 from CloudProcess import CloudProcess
-
+#### Cloud simulation class with scheduling of real processes
 class cloud:
     """
     Class that represents the cloud actions

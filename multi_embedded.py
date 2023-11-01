@@ -3,9 +3,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('TkAgg')
 from embedded import embedded
-import sys
-import importlib
 import tikzplotlib
+
+#### Simulation class for multiple embedded systems
 class multi_embedded:
     def __init__(self,number:int,current_states:list,g_list:list,mpc_list:list,m_list:list,linear_list:list)->None:
         self.fig=plt.figure()
@@ -55,6 +55,7 @@ class multi_embedded:
     def update_network(self,update_list:list)->None:
         for num in update_list:
             self.embedded_list[num].update_network(num)
+    #### Visualization of the system dynamics -> store the tracking error
     def visualize_system(self)->None:
         plt.ion()
         n=len(self.embedded_list)

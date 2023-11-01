@@ -2,10 +2,8 @@ from multiprocessing import Process
 from copy import deepcopy
 import pickle
 import numpy as np
-import torch
-import sys
-import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
+
+#### Class for the cloud processes
 class CloudProcess:
     def __init__(self,function,system_number,num_workers=None,q=None,x0=None,u0=None,deadline=None,startup_function=None,num=0,r_num=0):
 
@@ -161,6 +159,7 @@ class CloudProcess:
 
     def get_running_time(self):
         return self._deadline
+#### Process Class for the mockup cloud processes
 class CloudProcessMockup(CloudProcess):
     def __deepcopy__(self, memodict={}):
         cls = self.__class__
