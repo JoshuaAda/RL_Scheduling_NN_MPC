@@ -3,7 +3,7 @@
 With the increased complexity of optimal control algorithms demanding more real-time computational power for systems with limited embedded hardware
 , cloud control also known as Control as a Service (CaaS) is becoming of interest in recent research.
 The need for a backup controller on-premise for safety purposes resulted in the controlling algorithm
-presented in \cite{joshuaApprox}. A neural network approximation of the explicit MPC serves as the embedded
+presented in [[1]](https://ieeexplore.ieee.org/document/10284471). A neural network approximation of the explicit MPC serves as the embedded
 controller, while the cloud or central computing unit (CCU) only controls in case of errors or model changes.
 In this paper, the algorithm is extended to multiple systems by proposing a scheduling algorithm for the performed control
 task, to reduce the CCU makespan. To improve from a simple heuristic, a safe reinforcement learning method
