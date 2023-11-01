@@ -1,12 +1,12 @@
-### Readme for the repositiory RL_Scheduling_NN_MPC
- #
+### ECC 2024: Multi-system cloud control with embedded neural network approximators using safe reinforcement scheduling
+ # About the repository
 This repository is related to the paper 
  "Multi-system cloud control with embedded neural
  network approximators using safe reinforcement
  scheduling" by Joshua Adamek and Sergio Lucia,
  under revision for the European Conference 
  of Control, 2024.
-#
+# Affiliations
 
  -----------------
 The code is written in Python 3.7.16 and uses the 
@@ -14,7 +14,7 @@ The code is written in Python 3.7.16 and uses the
 For the scheduling of cloud tasks using reinforcement learning, the
 [Stable Baselines 3](https://stable-baselines3.readthedocs.io/en/master/) framework along with a self-created [GYM](https://www.gymlibrary.dev) environment
 is used. The necessary packages can be installed using the _requirements.txt_ file presented in the repository. 
-#
+# Reconstruction of the results
 
 -------------------
 
@@ -23,7 +23,7 @@ The _changing6.pkl_ file contains the scenario used for the control case study. 
 files you find the results for the relative tracking error for all three comparisons. As it is not yet possible to upload the PPO model
 used in the case studies due to storage size, you cannot run the case studies yourself in the exact manner. However, you
 can already train your own model and evaluate it
-#
+# Instructions
 
 -------------------
 These are two tasks you can perform with this repository:
