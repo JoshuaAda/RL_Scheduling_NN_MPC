@@ -29,13 +29,13 @@ is used. The necessary packages can be installed using the _requirements.txt_ fi
 ## Reconstruction of the results
 
 You find the training curves of the RL models used in the paper in the _results/images_ folder.
-The _changing6.pkl_ file contains the scenario used for the control case study. In the respective _results/Tracking_XY.npz_
-files you find the results for the relative tracking error for all three case studies. As it is not yet possible to upload the PPO models 
-due to storage size, you cannot run the case studies yourself in the exact manner. However, you
-can already train your own model and evaluate it.
+The RL models for the comparison study can be found in the result folder and used as instructed below using the specific model parameters in the ```evaluation.py``` file.
+The _changing_scenario.pkl_ file as well as _x_tilde_scenario.pkl_ contain the scenario used for the control case study and can be run as instructed below with the flag ```--run_first=False```.
+Furthermore, you find the results for the relative tracking error for all three case studies directly in _results/Tracking_XY.npz_.
 ## Instructions
 
-These are two tasks you can perform with this repository:
+Be careful in using the default parameters for your own models as it will override the paper results and models given in the _results_ folder.
+These are the two tasks you can perform with this repository:
 1. Train your own model for the scheduling of cloud tasks. For example the smaller scenario model in the paper
 has been derived using the following command:
    ```
@@ -44,10 +44,11 @@ has been derived using the following command:
    The default parameters are already set to train for the larger scenario. In case you want to train only the PPO agent without
    the safe RL approach set ```--use_both=False```.
 2. Evaluate a model. For this you can use the _evaluate.py_ file. The default parameters are set to evaluate the larger scenario model.
-   This script is also used for the control case study. With the following flags you can rerun the results for the safe reinforcement learning scheduler
+   This script is also used for the control case study. With the following flags you can rerun the control case study with the safe reinforcement learning scheduler
    ``` 
    evaluate.py --use_true=True, --num_iter=5000
    ```
 
    Setting the flag ```--use_mpc=True``` will give you the results for controlling only with online MPC's. Setting the flags
    ```--use_both=False, --use_priority=True``` leads to an evaluation of the heuristic scheduler.
+
