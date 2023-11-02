@@ -2,14 +2,11 @@ import random
 import matplotlib.pyplot as plt
 import gym
 from gym import spaces
-import pygame
 import numpy as np
 from cloud import cloud
 import pickle
-from multi_embedded import multi_embedded,embedded
-from cloudMockup import cloudMockup,cloudMockupPriority,cloudMockupBest
-import copy
-from CloudProcess import CloudProcessMockup
+from multi_embedded import multi_embedded
+from cloudMockup import cloudMockup,cloudMockupPriority
 
 class SchedulingEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -83,9 +80,9 @@ class SchedulingEnv(gym.Env):
             self._changing_lists=[]
             self.x_tilde_lists=[]
         else:
-            with open('changing6.pkl', 'rb') as f:
+            with open('results/changing_scenario.pkl', 'rb') as f:
                 self._changing_lists=pickle.load(f)
-            with open('x_tilde6.pkl', 'rb') as f:
+            with open('results/x_tilde_scenario.pkl', 'rb') as f:
                 self.x_tilde_lists=pickle.load(f)
 
 
@@ -352,9 +349,9 @@ class SchedulingEnv(gym.Env):
                         self._changing_lists.append(changing_list)
 
                         self.x_tilde_lists.append(x_tilde)
-                        with open('changing6.pkl', 'wb') as f:
+                        with open('results/changing_scenario.pkl', 'wb') as f:
                             pickle.dump(self._changing_lists, f)
-                        with open('x_tilde6.pkl', 'wb') as f:
+                        with open('results/x_tilde_scenario.pkl', 'wb') as f:
                             pickle.dump(self.x_tilde_lists, f)
                     templates=self._cloud.change_template(changing_list,x_tilde_new=x_tilde)
                     self._current_state = [1 if k in self.failure_list else val for k, val in
@@ -397,9 +394,9 @@ class SchedulingEnv(gym.Env):
                     self._changing_lists.append(self.failure_list.copy())
                     self.x_tilde_lists.append(x_tilde)
 
-                    with open('changing6.pkl', 'wb') as f:
+                    with open('results/changing_scenario.pkl', 'wb') as f:
                         pickle.dump(self._changing_lists, f)
-                    with open('x_tilde6.pkl', 'wb') as f:
+                    with open('results/x_tilde_scenario.pkl', 'wb') as f:
                         pickle.dump(self.x_tilde_lists, f)
                 self._current_state=[1 if k in self.failure_list else val for k,val in enumerate(self._current_state)]
                 if 1 in self._current_state[0:-1] and not self._started:
