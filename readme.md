@@ -27,7 +27,7 @@ This repository is related to the paper
 For a first introduction to the topic, we propose to read the paper first. Furthermore, we attached the full description of 
 the MDP used as a model paradigm for the scheduling of cloud tasks in this subchapter:
 
-<img src="https://github.com/JoshuaAda/RL_Scheduling_NN_MPC/blob/main/gesamt_mdp_2.pdf">
+<img src="https://github.com/JoshuaAda/RL_Scheduling_NN_MPC/blob/main/gesamt_mdp_2.svg">
 
 Markov Decision Process for a single system. The states are described over its current performed task (\textbf{H}ealthy state, \textbf{U}nhealthy state, \textbf{S}ampling task, \textbf{L}oad data task, \textbf{C}ontrol task, \textbf{T}raining task), the deadline and the number of workers assigned to the task. For simplicity, the multi-step prediction states and the uncertain deadlines are omitted. The action determines whether to move on with a process or not and how many workers are assigned to a task. After completion, the respective system returns to the healthy state, where the system is controlled by the embedded controller.
  ## Dependencies
