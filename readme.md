@@ -25,11 +25,13 @@ This repository is related to the paper
  under revision for the European Conference 
  of Control, 2024.
 For a first introduction to the topic, we propose to read the paper first. Furthermore, we attached the full description of 
-the MDP used as a model paradigm for the scheduling of cloud tasks in this subchapter:
+the Markov Decision Process for one system in this subchapter such that it is easier to understand the scheduling environment presented in ```gym-examples/gym_examples.scheduling_envronment.py```:
 
 <img src="https://github.com/JoshuaAda/RL_Scheduling_NN_MPC/blob/main/gesamt_mdp_2.svg">
 
-Markov Decision Process for a single system. The states are described over its current performed task (\textbf{H}ealthy state, \textbf{U}nhealthy state, \textbf{S}ampling task, \textbf{L}oad data task, \textbf{C}ontrol task, \textbf{T}raining task), the deadline and the number of workers assigned to the task. For simplicity, the multi-step prediction states and the uncertain deadlines are omitted. The action determines whether to move on with a process or not and how many workers are assigned to a task. After completion, the respective system returns to the healthy state, where the system is controlled by the embedded controller.
+The states are described over its current performed task (**H**ealthy state, **U**nhealthy state, **S**ampling task, **L**oad data task, **C**ontrol task, **T**raining task), the deadline and the number of workers assigned to the task. 
+For simplicity,  the multi-step prediction states and the uncertain deadlines are omitted. The action determines whether to move on with a process or not and how many workers are assigned to a task. 
+After completion, the respective system returns to the healthy state, where the system is controlled by the embedded controller.
  ## Dependencies
  
 The code is written in Python 3.7.16 and uses the 
