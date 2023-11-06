@@ -1,4 +1,4 @@
-# ECC 2024:Safe and efficient multi-system neural controllers via reinforcement learning-based scheduling
+# ECC 2024: Safe and efficient multi-system neural controllers via reinforcement learning-based scheduling
 ## Abstract
 With the increasing use of advanced control methods
 such as model predictive control, the demand for real-time
