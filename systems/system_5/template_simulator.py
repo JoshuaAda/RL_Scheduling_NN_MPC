@@ -36,15 +36,19 @@ def template_simulator(model):
     --------------------------------------------------------------------------
     """
     simulator = do_mpc.simulator.Simulator(model)
-    A = np.array([[0.763, 0.460, 0.115, 0.020],
-                  [-0.899, 0.763, 0.420, 0.115],
-                  [0.115, 0.020, 0.763, 0.460],
-                  [0.420, 0.115, -0.899, 0.763]])
+    A = np.array([[1, 0.5],[0,1]]) #np.array([[0.763, 0.460, 0.115, 0.020],
+         #         [-0.899, 0.763, 0.420, 0.115],
+         #         [0.115, 0.020, 0.763, 0.460],
+         #         [0.420, 0.115, -0.899, 0.763]])
 
-    B = np.array([[0.014],
-                  [0.063],
-                  [0.221],
-                  [0.367]])
+    B = np.array([[0],[1]])#np.array([[0.014],
+        #          [0.063],
+        #          [0.221],
+        #          [0.367]])
+    F=np.array([[1,0],[0,1]])#np.array([[1, 0, 0, 0],
+      #            [0, 1, 0., 0],
+      #            [0, 0, 1, 0],
+      #            [0, 0, 0, 1]])
 
     simulator.set_param(t_step = 0.5)
     tvp_template = simulator.get_tvp_template()
@@ -54,6 +58,7 @@ def template_simulator(model):
 
         tvp_template['A'] = A
         tvp_template['B'] = B
+        tvp_template['F'] = F
         return tvp_template
 
     # Set the tvp_fun:

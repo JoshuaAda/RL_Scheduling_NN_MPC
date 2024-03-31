@@ -42,16 +42,17 @@ def template_model(symvar_type='SX'):
     # States are the position and velocitiy of the two masses.
 
     # States struct (optimization variables):
-    _x = model.set_variable(var_type='_x', var_name='x', shape=(4,1))
-    x_tilde = model.set_variable(var_type='_tvp', var_name='x_tilde',shape=(4,1))
+    _x = model.set_variable(var_type='_x', var_name='x', shape=(2,1))
+    x_tilde = model.set_variable(var_type='_tvp', var_name='x_tilde',shape=(2,1))
 
 
-    K=model.set_variable('_tvp', var_name='K',shape=(4,1))
-    T=model.set_variable('_tvp', var_name='T',shape=(4,4))
-    P = model.set_variable('_tvp', var_name='P',shape=(4,4))
-    A = model.set_variable('_tvp', var_name='A',shape=(4,4))
-    B = model.set_variable('_tvp', var_name='B',shape=(4,1))
-    Q = model.set_variable('_tvp', var_name='Q',shape=(4,4))
+    K=model.set_variable('_tvp', var_name='K',shape=(2,1))
+    T=model.set_variable('_tvp', var_name='T',shape=(2,2))
+    P = model.set_variable('_tvp', var_name='P',shape=(2,2))
+    F = model.set_variable('_tvp', var_name='F',shape=(2,2))
+    A = model.set_variable('_tvp', var_name='A',shape=(2,2))
+    B = model.set_variable('_tvp', var_name='B',shape=(2,1))
+    Q = model.set_variable('_tvp', var_name='Q',shape=(2,2))
 
 
     # Input struct (optimization variables):
@@ -60,10 +61,10 @@ def template_model(symvar_type='SX'):
     # Set expression. These can be used in the cost function, as non-linear constraints
     # or just to monitor another output.
     model.set_expression(expr_name='cost', expr=(_x-x_tilde).T@Q@(_x-x_tilde))
-    model.set_expression(expr_name='ter_cost',expr=(_x-x_tilde).T@P@(_x-x_tilde))
+    model.set_expression(expr_name='ter_cost',expr=(_x-x_tilde).T@Q@(_x-x_tilde))
 
 
-    x_next = A@_x+B@_u
+    x_next = A@_x+B@_u+0.1*sqrt(_x.T@_x+0.1)
     model.set_rhs('x', x_next,process_noise=True)
 
     model.setup()

@@ -47,19 +47,23 @@ def template_mpc(model):
 
     }
 
-    A = np.array([[ 0.763,  0.460,  0.115,  0.020],
-                  [-0.899,  0.763,  0.420,  0.115],
-                  [ 0.115,  0.020,  0.763,  0.460],
-                  [ 0.420,  0.115, -0.899,  0.763]])
+    A = np.array([[ 1,  0.5],
+                  [0,  1]])
+                 # [ 0.115,  0.020,  0.763,  0.460],
+                 # [ 0.420,  0.115, -0.899,  0.763]])
 
-    B = np.array([[0.014],
-                  [0.063],
-                  [0.221],
-                  [0.367]])
-    Q=np.array([[1,  0,   0,  0],
-                  [0,  0,   0,  0],
-                  [ 0,  0,  0,  0],
-                  [ 0,  0,  0,  0]])
+    B = np.array([[0],
+                  [1]])
+                  #[0.221],
+                  #[0.367]])
+    F= np.array([[ 1,  0],
+                  [0,  1]])#0,  0],
+                  #[ 0,  0,  1,  0],
+                  #[ 0,  0, 0,  1]])
+    Q=np.array([[1,  0],
+                  [0,  0]])#,   0,  0],
+                  #[ 0,  0,  0,  0],
+                  #[ 0,  0,  0,  0]])
 
     # get a stabilizing controller gain matrix with an simple LQR approach
     R=np.array([0])
@@ -73,10 +77,11 @@ def template_mpc(model):
     def tvp_fun(t_curr):
 
         for k in range(mpc.n_horizon + 1):
-            tvp_template['_tvp', k, 'x_tilde'] = np.array([[0], [0], [0], [0]])
+            tvp_template['_tvp', k, 'x_tilde'] = np.array([[0], [0]])
             tvp_template['_tvp', k, 'A'] = A
             tvp_template['_tvp', k, 'B'] = B
             tvp_template['_tvp', k, 'Q'] = Q
+            tvp_template['_tvp', k, 'F'] = F
             # tvp_template['_tvp', k, 'R'] = R
             tvp_template['_tvp', k, 'K'] = K.T
             tvp_template['_tvp', k, 'P'] = P
@@ -93,7 +98,7 @@ def template_mpc(model):
     mpc.set_rterm(u=0.1)
 
     # set constraints
-    max_x = np.array([[10], [10], [10], [10]])#np.array([[10], [10]])
+    max_x = np.array([[10], [10]])#, [10], [10]])#np.array([[10], [10]])
 
     mpc.bounds['lower','_x','x'] = -max_x
     mpc.bounds['upper','_x','x'] =  max_x
@@ -102,6 +107,8 @@ def template_mpc(model):
     mpc.bounds['upper','_u','u'] =  5
     suppress_ipopt  = {'ipopt.print_level': 0, 'ipopt.sb': 'yes', 'print_time': 0}
     mpc.set_param(nlpsol_opts=suppress_ipopt)
+    mpc.prepare_nlp()
+    '''
     # set terminal set
     F=np.array([[0.1, 0,0,0],[-0.1, 0,0,0],[0, 0.1,0,0],[0, -0.1,0,0],[0, 0,0.1,0],[0, 0,-0.1,0],[0, 0,0,0.1],[0, 0,0,-0.1]])
     G=np.array([[0.2],[-0.2]])
@@ -162,7 +169,7 @@ def template_mpc(model):
     # Create appropriate upper and lower bound (here they are both system_0 to create an equality constraint)
     mpc.nlp_cons_lb.append(mtx)
     mpc.nlp_cons_ub.append(np.zeros(extra_cons.shape))
-
+    '''
     mpc.create_nlp()
 
     return mpc

@@ -1,29 +1,15 @@
-# ECC 2024: Safe and efficient multi-system neural controllers via reinforcement learning-based scheduling
+# Codit 2024: Safe and efficient multi-system neural controllers via reinforcement learning-based scheduling
 ## Abstract
-With the increasing use of advanced control methods
-such as model predictive control, the demand for real-time
-computational power continues to increase. Meeting this demand
-can be especially challenging when multiple systems need
-to be controlled with the potentially limited embedded hardware
-of the individual systems. Utilizing a central computing unit,
-such as a cloud, can provide the required additional computing
-power at the expense of increased economic and energetic costs.
-In this work, we consider a scenario where embedded
-controllers based on neural networks that imitate a model
-predictive controller need to be supported by a central computing
-unit in case of errors or model changes. In order to
-minimize the necessary amount of central computing used to
-guarantee a safe simultaneous operation of multiple systems,
-we propose a reinforcement learning-based scheduling of the
-different necessary computing tasks. A case study illustrates
-the benefits of the proposed control structure.
+With the increasing use of advanced control methods such as model predictive control for nonlinear systems, the demand for real-time computational power continues to increase. Meeting this demand can be especially challenging when multiple nonlinear systems need to be controlled with the potentially limited embedded hardware of the individual systems. Utilizing a central computing unit, such as a cloud, can provide the required additional computing power at the expense of increased economic and energy costs.  
+In this work, we consider a scenario where embedded controllers based on neural networks that imitate a model predictive controller need to be supported by a central computing unit in case of errors or model changes. To minimize the necessary amount of central computing used to guarantee a safe simultaneous operation of multiple systems, we propose a reinforcement learning-based scheduling of the different necessary computing tasks.
+Furthermore we show that the proposed control structure is safe for nonlinear systems.
+A case study illustrates the benefits of the proposed control structure.
  ## About the repository
 This repository is related to the paper 
  "Multi-system cloud control with embedded neural
  network approximators using safe reinforcement
  scheduling" by Joshua Adamek and Sergio Lucia,
- under revision for the European Conference 
- of Control, 2024.
+ under revision for the Conference on Control, Decision and Information Technologies, 2024.
 For a first introduction to the topic, we propose to read the paper first. Furthermore, we attached the full description of 
 the Markov Decision Process for one system in this subchapter such that it is easier to understand the scheduling environment presented in ```gym-examples/gym_examples.scheduling_envronment.py```:
 
